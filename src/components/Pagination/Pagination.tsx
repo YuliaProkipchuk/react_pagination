@@ -13,8 +13,30 @@ export const Pagination: React.FC<Props> = ({
   currentPage = 1,
 }) => {
   const totalPages = Math.ceil(total / perPage);
-  const hasPrev = currentPage !== 1;
-  const hasNext = currentPage !== totalPages;
+  const hasPrev = totalPages && currentPage !== 1;
+  const hasNext = totalPages && currentPage !== totalPages;
+
+  const handleNextClick = () => {
+    if (!hasNext) {
+      return;
+    }
+    onPageChange(currentPage + 1);
+  };
+
+  const handlePrevClick = () => {
+    if (!hasPrev) {
+      return;
+    }
+    onPageChange(currentPage - 1);
+  };
+
+  const handlePageClick = (pageNum: number) => {
+    if (pageNum === currentPage) {
+      return;
+    }
+    onPageChange(pageNum);
+  };
+
   return (
     <>
       <ul className="pagination">
@@ -24,7 +46,7 @@ export const Pagination: React.FC<Props> = ({
             className="page-link"
             href="#prev"
             aria-disabled={`${!hasPrev}`}
-            onClick={() => onPageChange(currentPage - 1)}
+            onClick={handlePrevClick}
           >
             «
           </a>
@@ -38,7 +60,7 @@ export const Pagination: React.FC<Props> = ({
               data-cy="pageLink"
               className="page-link"
               href={`#${i + 1}`}
-              onClick={() => onPageChange(i + 1)}
+              onClick={() => handlePageClick(i + 1)}
             >
               {i + 1}
             </a>
@@ -50,7 +72,7 @@ export const Pagination: React.FC<Props> = ({
             className="page-link"
             href="#next"
             aria-disabled={`${currentPage === totalPages}`}
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={handleNextClick}
           >
             »
           </a>
